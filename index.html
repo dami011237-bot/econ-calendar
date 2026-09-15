@@ -918,6 +918,11 @@ function setView(v){
 calViewBtn.addEventListener("click", ()=>setView("cal"));
 listViewBtn.addEventListener("click", ()=>setView("list"));
 
+/* 작은 화면(모바일)으로 접속하면 기본을 리스트 보기로 시작 */
+if(window.matchMedia("(max-width: 560px)").matches){
+  setView("list");
+}
+
 function renderCalendar(events, bodyId){
   const body = document.getElementById(bodyId);
   body.innerHTML = "";
