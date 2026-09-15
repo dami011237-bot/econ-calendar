@@ -268,30 +268,157 @@
   .ev.kr{
     color:var(--kr-text);
     background:var(--kr-bg);
-    border-left:4px solid var(--kr-bar);
+    border:1.5px solid var(--kr-bar);
   }
   .ev.us{
     color:var(--us);
     background:var(--us-bg);
-    border-left:4px solid var(--us);
+    border:1.5px solid var(--us);
   }
   .ev.updated{
     color:var(--upd);
     background:var(--upd-bg);
-    border-left:4px solid var(--upd);
+    border:1.5px solid var(--upd);
   }
   .ev.mpc{
     color:var(--mpc);
     background:var(--mpc-bg);
-    border-left:4px solid var(--mpc);
+    border:1.5px solid var(--mpc);
   }
   .ev.holiday{
     color:var(--holiday);
     background:var(--holiday-bg);
-    border-left:4px solid var(--holiday);
+    border:1.5px solid var(--holiday);
     cursor:default;
     font-weight:700;
   }
+
+  /* ── 보기 전환 (캘린더/리스트) ── */
+  .toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .toolbar .legend{margin-bottom:0;}
+  .view-toggle{
+    font-family:var(--font-sans);
+    display:flex;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    background:#FFFFFF;
+  }
+  .view-toggle button{
+    appearance:none;border:none;cursor:pointer;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    padding:10px 18px;
+    background:#FFFFFF;
+    color:#5A6880;
+  }
+  .view-toggle button + button{border-left:1.5px solid var(--line);}
+  .view-toggle button.active{
+    background:var(--navy);
+    color:#FFFFFF;
+  }
+  .view-toggle button:focus-visible{outline:3px solid var(--navy);outline-offset:-3px;}
+
+  /* ── 리스트 보기 ── */
+  .list-view{
+    display:none;
+    font-family:var(--font-sans);
+  }
+  .list-view.show{display:block;}
+  .lw{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:14px;
+    box-shadow:0 2px 10px rgba(30,47,85,.06);
+  }
+  .lw-head{
+    background:var(--navy-deep);
+    color:#FFFFFF;
+    font-size:16px;
+    font-weight:700;
+    padding:12px 16px;
+  }
+  .lw-head small{
+    font-weight:500;
+    font-size:13.5px;
+    color:#C4CCE0;
+    margin-left:10px;
+  }
+  .ld{
+    padding:14px 16px;
+  }
+  .ld + .ld{border-top:1px solid var(--line);}
+  .ld-date{
+    font-size:16.5px;
+    font-weight:800;
+    margin-bottom:9px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .ld-date.holiday{color:var(--holiday);}
+  .ld .events{gap:8px;}
+  .ev.ev-lg{
+    font-size:15px;
+    line-height:1.5;
+    padding:11px 13px;
+    width:100%;
+    border-radius:8px;
+  }
+  .lw-empty{
+    padding:14px 16px;
+    font-size:14.5px;
+    color:#8B95AC;
+  }
+  .ld-none{
+    margin-left:30px;
+    font-size:13.5px;
+    font-weight:500;
+    color:#B3BBCB;
+  }
+  .ld.no-ev{padding:11px 16px;}
+  .ld.no-ev .ld-date{margin-bottom:0;font-weight:700;color:#A9B2C4;}
+
+  /* ── 모바일 버전 보기 (스마트폰 프레임 미리보기) ── */
+  .mobile-view{
+    display:none;
+    font-family:var(--font-sans);
+  }
+  .mobile-view.show{display:block;}
+  .mobile-cap{
+    text-align:center;
+    font-size:14px;
+    color:#8B95AC;
+    margin-bottom:14px;
+  }
+  .mobile-frame{
+    width:404px;
+    max-width:100%;
+    margin:0 auto;
+    background:#FFFFFF;
+    border:10px solid #1B2233;
+    border-radius:36px;
+    padding:14px 8px;
+    box-shadow:0 8px 24px rgba(30,47,85,.18);
+  }
+  .mobile-frame .calendar{
+    border-radius:12px;
+    box-shadow:none;
+  }
+  .mobile-frame .cal-head div{font-size:13px;padding:10px 2px;}
+  .mobile-frame .cell{min-height:90px;padding:7px 4px 9px;}
+  .mobile-frame .daynum{font-size:13px;margin-bottom:6px;}
+  .mobile-frame .today-badge{font-size:10px;padding:1px 6px;}
+  .mobile-frame .events{gap:5px;}
+  .mobile-frame .ev{font-size:10.5px;line-height:1.4;padding:4px 5px;border-radius:5px;border-width:1px;}
 
   /* ── 팝업 ── */
   .overlay{
@@ -429,7 +556,7 @@
 
   @media (max-width:560px){
     .cell{min-height:100px;padding:8px 5px 10px;}
-    .ev{font-size:12px;padding:5px 6px;border-left-width:3px;}
+    .ev{font-size:12px;padding:5px 6px;}
     .daynum{font-size:14px;}
     .cal-head div{font-size:14px;padding:11px 2px;}
     .month-nav{gap:20px;}
@@ -465,17 +592,38 @@
     <span class="who" id="quoteWho"></span>
   </div>
 
-  <div class="legend">
-    <span class="l-kr">한국 일정</span>
-    <span class="l-us">미국 일정</span>
-    <span class="l-upd">경제 지표 업데이트</span>
+  <div class="toolbar">
+    <div class="view-toggle" role="tablist" aria-label="보기 방식">
+      <button id="calViewBtn" class="active" aria-pressed="true">캘린더로 보기</button>
+      <button id="listViewBtn" aria-pressed="false">리스트로 보기</button>
+      <button id="mobileViewBtn" aria-pressed="false">모바일 버전 보기</button>
+    </div>
+    <div class="legend">
+      <span class="l-kr">한국 일정</span>
+      <span class="l-us">미국 일정</span>
+      <span class="l-upd">경제 지표 업데이트</span>
+    </div>
   </div>
 
-  <div class="calendar">
+  <div class="calendar" id="calendarView">
     <div class="cal-head">
       <div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
     </div>
     <div id="calBody"></div>
+  </div>
+
+  <div class="list-view" id="listView"></div>
+
+  <div class="mobile-view" id="mobileView">
+    <p class="mobile-cap">스마트폰에서 보이는 캘린더 모습 미리보기예요.</p>
+    <div class="mobile-frame">
+      <div class="calendar">
+        <div class="cal-head">
+          <div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
+        </div>
+        <div id="mCalBody"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -719,11 +867,102 @@ function render(){
     document.getElementById("quoteWho").textContent = data.quote.who;
     q.classList.add("show");
   } else q.classList.remove("show");
-  renderCalendar(data ? data.events : {});
+  renderCalendar(data ? data.events : {}, "calBody");
+  renderCalendar(data ? data.events : {}, "mCalBody");
+  renderList(data ? data.events : {});
 }
 
-function renderCalendar(events){
-  const body = document.getElementById("calBody");
+/* ───────── 리스트 보기 렌더링 ───────── */
+function renderList(events){
+  const list = document.getElementById("listView");
+  list.innerHTML = "";
+  const first = new Date(year, month-1, 1);
+  const lastDate = new Date(year, month, 0).getDate();
+  let cursor = new Date(first);
+  const dow = (cursor.getDay()+6)%7; // 월=0
+  cursor.setDate(cursor.getDate()-dow);
+  const isThisMonth = TODAY.getFullYear()===year && TODAY.getMonth()===month-1;
+  let weekNo = 0;
+
+  while(cursor <= new Date(year, month-1, lastDate)){
+    const weekDays = []; // 이번 주 월~금 중 이번 달 날짜
+    for(let i=0;i<7;i++){
+      if(i<=4 && cursor.getMonth() === month-1) weekDays.push(cursor.getDate());
+      cursor.setDate(cursor.getDate()+1);
+    }
+    if(weekDays.length === 0) continue; // 월~금에 이번 달 날짜가 없는 주는 건너뜀
+    weekNo++;
+
+    const sec = document.createElement("div");
+    sec.className = "lw";
+    const head = document.createElement("div");
+    head.className = "lw-head";
+    head.innerHTML = weekNo + "주차" +
+      "<small>" + month + "월 " + weekDays[0] + "일 ~ " + month + "월 " + weekDays[weekDays.length-1] + "일</small>";
+    sec.appendChild(head);
+
+    let weekHasAny = false;
+    weekDays.forEach(d=>{
+      const evs = events[d] || [];
+      const dayBox = document.createElement("div");
+      dayBox.className = "ld" + (evs.length===0 ? " no-ev" : "");
+      const dt = new Date(year, month-1, d);
+      const isHoliday = evs.some(e=>e.holiday);
+      const isToday = isThisMonth && TODAY.getDate()===d;
+      const dateEl = document.createElement("div");
+      dateEl.className = "ld-date" + (isHoliday?" holiday":"");
+      dateEl.innerHTML = month + "월 " + d + "일 " + DAYNAMES[dt.getDay()] + "요일" +
+        (isToday?'<span class="today-badge">오늘</span>':'') +
+        (evs.length===0?'<span class="ld-none">일정 없음</span>':'');
+      dayBox.appendChild(dateEl);
+
+      if(evs.length > 0){
+        weekHasAny = true;
+        const box = document.createElement("div");
+        box.className = "events";
+        evs.forEach(e=>{
+          if(e.holiday){
+            const s = document.createElement("span");
+            s.className = "ev ev-lg holiday";
+            s.textContent = e.holiday;
+            box.appendChild(s);
+          } else {
+            const info = INFO[e.id];
+            const b = document.createElement("button");
+            b.className = "ev ev-lg " + (e.result ? "updated" : info.type);
+            b.textContent = e.name || info.name;
+            b.addEventListener("click", ()=>openModal(e, d));
+            box.appendChild(b);
+          }
+        });
+        dayBox.appendChild(box);
+      }
+      sec.appendChild(dayBox);
+    });
+
+    list.appendChild(sec);
+  }
+}
+
+/* ───────── 보기 전환 (캘린더/리스트/모바일) ───────── */
+const calViewBtn = document.getElementById("calViewBtn");
+const listViewBtn = document.getElementById("listViewBtn");
+const mobileViewBtn = document.getElementById("mobileViewBtn");
+function setView(v){
+  document.getElementById("calendarView").style.display = (v==="cal") ? "" : "none";
+  document.getElementById("listView").classList.toggle("show", v==="list");
+  document.getElementById("mobileView").classList.toggle("show", v==="mobile");
+  [[calViewBtn,"cal"],[listViewBtn,"list"],[mobileViewBtn,"mobile"]].forEach(([btn,name])=>{
+    btn.classList.toggle("active", v===name);
+    btn.setAttribute("aria-pressed", v===name);
+  });
+}
+calViewBtn.addEventListener("click", ()=>setView("cal"));
+listViewBtn.addEventListener("click", ()=>setView("list"));
+mobileViewBtn.addEventListener("click", ()=>setView("mobile"));
+
+function renderCalendar(events, bodyId){
+  const body = document.getElementById(bodyId);
   body.innerHTML = "";
   const first = new Date(year, month-1, 1);
   const lastDate = new Date(year, month, 0).getDate();
