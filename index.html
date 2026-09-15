@@ -132,8 +132,9 @@
     display:block;
   }
   @media (max-width:560px){
-    .head{align-items:flex-start;}
-    .head-right{margin-left:auto;}
+    .head{flex-direction:column;align-items:stretch;gap:14px;}
+    .head-right{order:-1;margin-left:auto;} /* 타이틀+아이콘을 최상단으로 */
+    .head-left{order:1;}
     .avatar{width:62px;height:62px;}
   }
 
@@ -387,39 +388,6 @@
   .ld.no-ev{padding:11px 16px;}
   .ld.no-ev .ld-date{margin-bottom:0;font-weight:700;color:#A9B2C4;}
 
-  /* ── 모바일 버전 보기 (스마트폰 프레임 미리보기) ── */
-  .mobile-view{
-    display:none;
-    font-family:var(--font-sans);
-  }
-  .mobile-view.show{display:block;}
-  .mobile-cap{
-    text-align:center;
-    font-size:14px;
-    color:#8B95AC;
-    margin-bottom:14px;
-  }
-  .mobile-frame{
-    width:404px;
-    max-width:100%;
-    margin:0 auto;
-    background:#FFFFFF;
-    border:10px solid #1B2233;
-    border-radius:36px;
-    padding:14px 8px;
-    box-shadow:0 8px 24px rgba(30,47,85,.18);
-  }
-  .mobile-frame .calendar{
-    border-radius:12px;
-    box-shadow:none;
-  }
-  .mobile-frame .cal-head div{font-size:13px;padding:10px 2px;}
-  .mobile-frame .cell{min-height:90px;padding:7px 4px 9px;}
-  .mobile-frame .daynum{font-size:13px;margin-bottom:6px;}
-  .mobile-frame .today-badge{font-size:10px;padding:1px 6px;}
-  .mobile-frame .events{gap:5px;}
-  .mobile-frame .ev{font-size:10.5px;line-height:1.4;padding:4px 5px;border-radius:5px;border-width:1px;}
-
   /* ── 팝업 ── */
   .overlay{
     position:fixed;inset:0;
@@ -557,6 +525,11 @@
   @media (max-width:560px){
     .cell{min-height:100px;padding:8px 5px 10px;}
     .ev{font-size:12px;padding:5px 6px;}
+    /* 좁은 화면에서는 칸 폭에 맞춰 양쪽 정렬 + 단어 중간 줄바꿈 허용 */
+    .calendar .ev{
+      text-align:justify;
+      word-break:break-all;
+    }
     .daynum{font-size:14px;}
     .cal-head div{font-size:14px;padding:11px 2px;}
     .month-nav{gap:20px;}
@@ -596,7 +569,6 @@
     <div class="view-toggle" role="tablist" aria-label="보기 방식">
       <button id="calViewBtn" class="active" aria-pressed="true">캘린더로 보기</button>
       <button id="listViewBtn" aria-pressed="false">리스트로 보기</button>
-      <button id="mobileViewBtn" aria-pressed="false">모바일 버전 보기</button>
     </div>
     <div class="legend">
       <span class="l-kr">한국 일정</span>
@@ -613,18 +585,6 @@
   </div>
 
   <div class="list-view" id="listView"></div>
-
-  <div class="mobile-view" id="mobileView">
-    <p class="mobile-cap">스마트폰에서 보이는 캘린더 모습 미리보기예요.</p>
-    <div class="mobile-frame">
-      <div class="calendar">
-        <div class="cal-head">
-          <div>월</div><div>화</div><div>수</div><div>목</div><div>금</div>
-        </div>
-        <div id="mCalBody"></div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- 팝업 -->
@@ -868,7 +828,6 @@ function render(){
     q.classList.add("show");
   } else q.classList.remove("show");
   renderCalendar(data ? data.events : {}, "calBody");
-  renderCalendar(data ? data.events : {}, "mCalBody");
   renderList(data ? data.events : {});
 }
 
@@ -944,22 +903,20 @@ function renderList(events){
   }
 }
 
-/* ───────── 보기 전환 (캘린더/리스트/모바일) ───────── */
+/* ───────── 보기 전환 (캘린더/리스트) ───────── */
 const calViewBtn = document.getElementById("calViewBtn");
 const listViewBtn = document.getElementById("listViewBtn");
-const mobileViewBtn = document.getElementById("mobileViewBtn");
 function setView(v){
-  document.getElementById("calendarView").style.display = (v==="cal") ? "" : "none";
-  document.getElementById("listView").classList.toggle("show", v==="list");
-  document.getElementById("mobileView").classList.toggle("show", v==="mobile");
-  [[calViewBtn,"cal"],[listViewBtn,"list"],[mobileViewBtn,"mobile"]].forEach(([btn,name])=>{
-    btn.classList.toggle("active", v===name);
-    btn.setAttribute("aria-pressed", v===name);
-  });
+  const isCal = v === "cal";
+  document.getElementById("calendarView").style.display = isCal ? "" : "none";
+  document.getElementById("listView").classList.toggle("show", !isCal);
+  calViewBtn.classList.toggle("active", isCal);
+  listViewBtn.classList.toggle("active", !isCal);
+  calViewBtn.setAttribute("aria-pressed", isCal);
+  listViewBtn.setAttribute("aria-pressed", !isCal);
 }
 calViewBtn.addEventListener("click", ()=>setView("cal"));
 listViewBtn.addEventListener("click", ()=>setView("list"));
-mobileViewBtn.addEventListener("click", ()=>setView("mobile"));
 
 function renderCalendar(events, bodyId){
   const body = document.getElementById(bodyId);
